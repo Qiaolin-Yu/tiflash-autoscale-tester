@@ -24,3 +24,6 @@ report.xml
 coverage.xml
 coverage
 *.txt
+data/
+integrated/_base/test/load_data.sh
+integrated/_base/test/load_data.sh.t1

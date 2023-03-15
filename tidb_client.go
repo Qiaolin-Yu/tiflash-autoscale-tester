@@ -47,12 +47,8 @@ func (c *TiDBClient) GetDB() *gorm.DB {
 // LoadData TODO
 func (c *TiDBClient) LoadData() error {
 	host, port := ConvertTidbAddrToHostAndPort(c.tidbAddr)
-	cmd := exec.Command("/bin/sh", "./scripts/rep-and-gendb.sh", "root", "1", host, port)
+	cmd := exec.Command("/bin/sh", "./scripts/rep-and-gendb.sh", "root", "", host, port)
 	err := cmd.Run()
-	if err != nil {
-		return err
-	}
-	err = cmd.Wait()
 	if err != nil {
 		return err
 	}
