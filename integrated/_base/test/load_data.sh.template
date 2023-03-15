@@ -56,8 +56,8 @@ function create_tpch_table_to_mysql()
 	fi
 
 	local create_table_stmt=`cat "${schema_file}" | tr -s "\n" " "`
-	mysql -u 'HHUSER' -pHHPWD -P "${mysql_port}" -h "${mysql_host}" -e "CREATE DATABASE IF NOT EXISTS ${db}"
-	mysql -u 'HHUSER' -pHHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" -e "${create_table_stmt}"
+	mysql -u 'HHUSER' HHPWD -P "${mysql_port}" -h "${mysql_host}" -e "CREATE DATABASE IF NOT EXISTS ${db}"
+	mysql -u 'HHUSER' HHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" -e "${create_table_stmt}"
 }
 export -f create_tpch_table_to_mysql
 
@@ -90,7 +90,7 @@ function load_tpch_data_to_mysql()
 	if [ -f "${data_dir}/${table}.tbl" ]; then
 		if [ -z "${block}" ] || [ "${block}" == '0' ]; then
 			local data_file="${data_dir}/${table}.tbl"
-			mysql -u 'HHUSER' -pHHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" --local-infile=1 \
+			mysql -u 'HHUSER' HHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" --local-infile=1 \
 				-e "load data local infile '${data_file}' into table ${table} fields terminated by '|' lines terminated by '|\n';"
 		fi
 	else
@@ -103,7 +103,7 @@ function load_tpch_data_to_mysql()
 				echo "[func load_tpch_data_to_mysql] ${data_file} not exists" >&2
 				return 1
 			fi
-			mysql -u 'HHUSER' -pHHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" --local-infile=1 \
+			mysql -u 'HHUSER' HHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" --local-infile=1 \
 				-e "set tidb_batch_insert = 1;set tidb_dml_batch_size = 20000; load data local infile '${data_file}' into table ${table} fields terminated by '|' lines terminated by '|\n';" &
 		done
 		wait
@@ -111,7 +111,7 @@ function load_tpch_data_to_mysql()
 
 	local max_block_idx=$((block - 1))
 	#if [ -z "${block}" ] || [ "${max_block_idx}" == "${block}" ]; then
-	#	mysql -u 'HHUSER' -pHHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" -e "analyze table ${table};"
+	#	mysql -u 'HHUSER' HHPWD -P "${mysql_port}" -h "${mysql_host}" -D "${db}" -e "analyze table ${table};"
 	#fi
 }
 export -f load_tpch_data_to_mysql
