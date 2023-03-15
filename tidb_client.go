@@ -40,10 +40,6 @@ func (c *TiDBClient) Close() {
 	sqlDB.Close()
 }
 
-func (c *TiDBClient) GetDB() *gorm.DB {
-	return c.db
-}
-
 // LoadData TODO
 func (c *TiDBClient) LoadData() error {
 	host, port := ConvertTidbAddrToHostAndPort(c.tidbAddr)
