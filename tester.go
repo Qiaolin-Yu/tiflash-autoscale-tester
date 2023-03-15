@@ -10,9 +10,9 @@ const (
 
 type ClientManger struct {
 	autoscaleClient *AutoscaleClient
-	tidbClient      *TiDBClient
+	tidbClient      *TidbClient
 }
 
-func NewClientManger(autoscaleClient *AutoscaleClient, tidbClient *TiDBClient) *ClientManger {
+func NewClientManger(autoscaleClient *AutoscaleClient, tidbClient *TidbClient) *ClientManger {
 	return &ClientManger{autoscaleClient: autoscaleClient, tidbClient: tidbClient}
 }
