@@ -42,7 +42,7 @@ func (c *TidbClient) Close() {
 }
 
 // LoadData TODO
-func (c *TidbClient) LoadData() error {
+func (c *TidbClient) LoadData(loadScale float32, loadTable string) (string, error) {
 	host, port := ConvertTidbAddrToHostAndPort(c.tidbAddr)
 	var password string
 	if c.tidbPassword == "" {
@@ -50,12 +50,14 @@ func (c *TidbClient) LoadData() error {
 	} else {
 		password = "-p" + c.tidbPassword
 	}
-	cmd := exec.Command("/bin/sh", "./scripts/rep-and-gendb.sh", c.tidbUser, password, host, port)
-	err := cmd.Run()
+	cmd := exec.Command("/bin/bash", "./scripts/rep-and-gendb.sh", c.tidbUser, password, host, port)
+	out, err := cmd.Output()
 	if err != nil {
-		return err
+		return string(out), err
 	}
-	return nil
+	cmd = exec.Command("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, fmt.Sprintf("%f", loadScale), loadTable)
+	out, err = cmd.Output()
+	return string(out), err
 }
 
 // GetTiFlashStatus TODO
