@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
 )
@@ -13,8 +14,7 @@ func TestAutoscale(t *testing.T) {
 	//defer tiDBClient.Close()
 	if config.NeedLoadData {
 		out, err := tidbClient.LoadData(config.LoadScale, config.LoadTable)
-		if err != nil {
-			log.Panicf("[Error][TidbClient]LoadData failed: %s, %s", err, out)
-		}
+		log.Printf("[TidbClient]LoadData : %s", out)
+		assert.NoError(t, err)
 	}
 }
