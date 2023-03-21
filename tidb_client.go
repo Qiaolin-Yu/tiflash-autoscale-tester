@@ -19,7 +19,6 @@ type TidbClient struct {
 
 func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string) *TidbClient {
 	tidbClient := &TidbClient{tidbAddr: tidbAddr, tidbUser: tidbUser, tidbPassword: tidbPassword}
-	tidbClient.Init()
 	return tidbClient
 }
 

@@ -16,6 +16,7 @@ func TestAutoscale(t *testing.T) {
 		if err != nil {
 			log.Printf("[TidbClient]LoadData failed: %v, %s", err, out)
 		}
+		tidbClient.Init()
 		log.Printf("[TidbClient]LoadData : %s", out)
 		tidbClient.SetTiFlashReplica()
 	}
