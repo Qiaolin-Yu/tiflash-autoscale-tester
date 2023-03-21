@@ -42,7 +42,7 @@ func (c *TidbClient) Close() {
 	c.db.Close()
 }
 
-func (c *TidbClient) LoadData(loadScale float32, loadTable string) (string, error) {
+func (c *TidbClient) LoadData(loadScale string, loadTable string) (string, error) {
 	host, port := ConvertTidbAddrToHostAndPort(c.tidbAddr)
 	var passwordOption string
 	if c.tidbPassword == "" {
@@ -55,7 +55,7 @@ func (c *TidbClient) LoadData(loadScale float32, loadTable string) (string, erro
 	if err != nil {
 		return string(out), err
 	}
-	cmd = exec.Command("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, fmt.Sprintf("%f", loadScale), loadTable)
+	cmd = exec.Command("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, loadScale, loadTable)
 	out, err = cmd.Output()
 	return string(out), err
 }
