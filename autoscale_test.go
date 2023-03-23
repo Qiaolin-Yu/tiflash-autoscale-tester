@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"testing"
+	"time"
 )
 
 func TestAutoscale(t *testing.T) {
@@ -16,9 +17,21 @@ func TestAutoscale(t *testing.T) {
 		if err != nil {
 			log.Printf("[TidbClient]LoadData failed: %v, %s", err, out)
 		}
-		tidbClient.Init()
-		log.Printf("[TidbClient]LoadData : %s", out)
-		tidbClient.SetTiFlashReplica()
+		log.Printf("[TidbClient]LoadData: %s", out)
+	}
+	tidbClient.Init()
+	defer tidbClient.Close()
+	tidbClient.SetTiFlashReplica()
+	start := time.Now()
+	for {
+		if time.Since(start) > time.Duration(config.CheckTimeout)*time.Second {
+			log.Fatal("[TidbClient]CheckTiFlashReady timeout")
+		}
+		InformationSchemaRows := tidbClient.GetTiFlashInformationSchema()
+		if CheckTiFlashReady(InformationSchemaRows) {
+			break
+		}
+		time.Sleep(time.Duration(config.CheckInterval) * time.Second)
 	}
 
 }

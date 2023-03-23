@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 func ConvertInterfaceToStringSlice(data interface{}) []string {
 	var res []string

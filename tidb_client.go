@@ -17,6 +17,16 @@ type TidbClient struct {
 	db           *sql.DB
 }
 
+type InformationSchema struct {
+	TableSchema    string
+	TableName      string
+	TableId        string
+	ReplicaCount   int
+	LocationLabels string
+	Available      int
+	Progress       int
+}
+
 func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string) *TidbClient {
 	tidbClient := &TidbClient{tidbAddr: tidbAddr, tidbUser: tidbUser, tidbPassword: tidbPassword}
 	return tidbClient
@@ -72,14 +82,35 @@ func (c *TidbClient) SetTiFlashReplica() {
 	MustExec(c.db, "ALTER TABLE part SET TIFLASH REPLICA 1;")
 }
 
-// GetTiFlashStatus TODO
-func (c *TidbClient) GetTiFlashStatus() bool {
+func (c *TidbClient) GetTiFlashInformationSchema() []InformationSchema {
 	rows, err := c.db.Query("select * from information_schema.tiflash_replica;")
 	if err != nil {
 		log.Fatal("Query error: ", err)
 	}
+	var rowsInfo []InformationSchema
+	var row InformationSchema
 	defer rows.Close()
-	return rows.Next()
+	for rows.Next() {
+		err := rows.Scan(&row.TableSchema, &row.TableName, &row.TableId, &row.ReplicaCount, &row.LocationLabels, &row.Available, &row.Progress)
+		if err != nil {
+			log.Fatal(err)
+		}
+		rowsInfo = append(rowsInfo, row)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return rowsInfo
+}
+
+func CheckTiFlashReady(schemaRows []InformationSchema) bool {
+	for _, row := range schemaRows {
+		if row.Available == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func MustExec(DB *sql.DB, query string, args ...interface{}) sql.Result {
