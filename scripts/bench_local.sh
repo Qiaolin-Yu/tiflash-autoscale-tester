@@ -1,1 +1,1 @@
-tiup bench rawsql run --count 0 --query-files hehe.sql  --db tpch_1 --threads 2
+tiup bench rawsql run --count $3 --query-files hehe.sql  --db $1 --threads $2

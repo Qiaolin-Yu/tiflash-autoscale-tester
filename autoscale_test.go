@@ -15,9 +15,9 @@ func TestAutoscale(t *testing.T) {
 	if config.NeedLoadData {
 		out, err := tidbClient.LoadData(config.LoadScale, config.LoadTable)
 		if err != nil {
-			log.Printf("[TidbClient]LoadData failed: %v, %s", err, out)
+			log.Fatalf("[Error]LoadData failed: %v, %s", err, out)
 		}
-		log.Printf("[TidbClient]LoadData: %s", out)
+		log.Printf("LoadData: %s", out)
 	}
 	tidbClient.Init()
 	defer tidbClient.Close()
@@ -25,7 +25,7 @@ func TestAutoscale(t *testing.T) {
 	start := time.Now()
 	for {
 		if time.Since(start) > time.Duration(config.CheckTimeout)*time.Second {
-			log.Fatal("[TidbClient]CheckTiFlashReady timeout")
+			log.Fatal("[Error]CheckTiFlashReady timeout")
 		}
 		InformationSchemaRows := tidbClient.GetTiFlashInformationSchema()
 		if CheckTiFlashReady(InformationSchemaRows) {
@@ -33,5 +33,14 @@ func TestAutoscale(t *testing.T) {
 		}
 		time.Sleep(time.Duration(config.CheckInterval) * time.Second)
 	}
+	log.Println("TiFlash is ready, begin to run bench")
+	queryCount := 1000
+	round := 2
+	log.Printf("[Round1]RunBenchmark: queryCount=%d, round=%d", queryCount, round)
+	out, err := tidbClient.RunBench(queryCount, round)
+	if err != nil {
+		log.Fatalf("[Error][Round1]RunBench failed: %v, %s", err, out)
+	}
+	log.Printf("[Round1]RunBench: %s", out)
 
 }

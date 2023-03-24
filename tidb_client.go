@@ -72,8 +72,10 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) (string, error
 }
 
 // RunBench TODO
-func (c *TidbClient) RunBench() {
-
+func (c *TidbClient) RunBench(queryCount int, threadNum int) (string, error) {
+	cmd := exec.Command("/bin/bash", "./scripts/bench_local.sh", c.dbName, fmt.Sprintf("%d", threadNum), fmt.Sprintf("%d", queryCount))
+	out, err := cmd.Output()
+	return string(out), err
 }
 
 func (c *TidbClient) SetTiFlashReplica() {
