@@ -9,7 +9,7 @@ import (
 func TestAutoscale(t *testing.T) {
 	config := NewDefaultConfig()
 	log.Println("Start to test TiFlash autoscale")
-	tidbClient := NewTidbClient(config.TidbAddr, config.TidbUser, config.TidbPassword)
+	tidbClient := NewTidbClient(config.TidbAddr, config.TidbUser, config.TidbPassword, config.DbName)
 	//tiDBClient.Init()
 	//defer tiDBClient.Close()
 	if config.NeedLoadData {

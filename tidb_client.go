@@ -14,6 +14,7 @@ type TidbClient struct {
 	tidbAddr     string
 	tidbUser     string
 	tidbPassword string
+	dbName       string
 	db           *sql.DB
 }
 
@@ -27,13 +28,13 @@ type InformationSchema struct {
 	Progress       int
 }
 
-func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string) *TidbClient {
-	tidbClient := &TidbClient{tidbAddr: tidbAddr, tidbUser: tidbUser, tidbPassword: tidbPassword}
+func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string, dbName string) *TidbClient {
+	tidbClient := &TidbClient{tidbAddr: tidbAddr, tidbUser: tidbUser, tidbPassword: tidbPassword, dbName: dbName}
 	return tidbClient
 }
 
 func (c *TidbClient) Init() {
-	dsn := fmt.Sprintf("root:@tcp(%s)/tpch_0_1?charset=utf8mb4", c.tidbAddr)
+	dsn := fmt.Sprintf("root:@tcp(%s)/"+c.dbName+"?charset=utf8mb4", c.tidbAddr)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -68,6 +69,11 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) (string, error
 	cmd = exec.Command("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, loadScale, loadTable)
 	out, err = cmd.Output()
 	return string(out), err
+}
+
+// RunBench TODO
+func (c *TidbClient) RunBench() {
+
 }
 
 func (c *TidbClient) SetTiFlashReplica() {
