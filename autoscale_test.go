@@ -35,9 +35,9 @@ func TestAutoscale(t *testing.T) {
 	}
 	log.Println("TiFlash is ready, begin to run bench")
 	queryCount := 1000
-	round := 2
-	log.Printf("[Round1]RunBenchmark: queryCount=%d, round=%d", queryCount, round)
-	out, err := tidbClient.RunBench(queryCount, round)
+	threadNum := 2
+	log.Printf("[Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	out, err := tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
 		log.Fatalf("[Error][Round1]RunBench failed: %v, %s", err, out)
 	}
