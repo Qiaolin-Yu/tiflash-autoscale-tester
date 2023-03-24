@@ -12,6 +12,7 @@ const (
 	DefaultLoadTable               = "all"
 	DefaultCheckInterval           = 10
 	DefaultCheckTimeout            = 120
+	DefaultEnableAutoScale         = true
 )
 
 type Config struct {
@@ -25,9 +26,10 @@ type Config struct {
 	CheckInterval           int
 	CheckTimeout            int
 	DbName                  string
+	EnableAutoScale         bool
 }
 
-func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string, tidbPassword string, needLoadData bool, loadScale string, loadTable string, checkInterval int, checkTimeout int) *Config {
+func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string, tidbPassword string, needLoadData bool, loadScale string, loadTable string, checkInterval int, checkTimeout int, enableAutoScale bool) *Config {
 	config := &Config{
 		AutoscaleHttpServerAddr: autoscaleHttpServerAddr,
 		TidbAddr:                tidbAddr,
@@ -38,13 +40,14 @@ func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string,
 		LoadTable:               loadTable,
 		CheckInterval:           checkInterval,
 		CheckTimeout:            checkTimeout,
+		EnableAutoScale:         enableAutoScale,
 	}
 	config.DbName = getDefaultDbName(config.LoadScale)
 	return config
 }
 
 func NewDefaultConfig() *Config {
-	return NewConfig(DefaultAutoscaleHttpServerAddr, DefaultTidbAddr, DefaultTidbUser, DefaultTidbPassword, DefaultNeedLoadData, DefaultLoadScale, DefaultLoadTable, DefaultCheckInterval, DefaultCheckTimeout)
+	return NewConfig(DefaultAutoscaleHttpServerAddr, DefaultTidbAddr, DefaultTidbUser, DefaultTidbPassword, DefaultNeedLoadData, DefaultLoadScale, DefaultLoadTable, DefaultCheckInterval, DefaultCheckTimeout, DefaultEnableAutoScale)
 }
 
 func getDefaultDbName(loadScale string) string {

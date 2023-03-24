@@ -42,18 +42,18 @@ func (c *AutoscaleClient) GetState(tidbClusterID string) (string, int, error) {
 	return res["state"].(string), int(res["numOfRNs"].(float64)), nil
 }
 
-func (c *AutoscaleClient) ResumeAndGetTopology(tidbClusterID string) (string, []string, error) {
-	resumeAndGetTopologyResp, err := http.PostForm(c.httpServerAddr+"/resume-and-get-topology", url.Values{
+func (c *AutoscaleClient) GetTopology(tidbClusterID string) (string, []string, error) {
+	getTopologyResp, err := http.PostForm(c.httpServerAddr+"/get-topology", url.Values{
 		"tidbclusterid": {tidbClusterID},
 	})
 	if err != nil {
 		return "", nil, err
 	}
-	defer resumeAndGetTopologyResp.Body.Close()
-	if resumeAndGetTopologyResp.StatusCode != http.StatusOK {
-		return "", nil, errors.New("resume-and-get-topology failed")
+	defer getTopologyResp.Body.Close()
+	if getTopologyResp.StatusCode != http.StatusOK {
+		return "", nil, errors.New("get-topology failed")
 	}
-	data, err := io.ReadAll(resumeAndGetTopologyResp.Body)
+	data, err := io.ReadAll(getTopologyResp.Body)
 	if err != nil {
 		return "", nil, err
 	}
