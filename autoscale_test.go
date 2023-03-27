@@ -15,14 +15,12 @@ func TestAutoscale(t *testing.T) {
 	if config.EnableAutoScale {
 		autoscaleClient = NewAutoscaleClient(config.AutoscaleHttpServerAddr)
 	}
-	//tiDBClient.Init()
-	//defer tiDBClient.Close()
 	if config.NeedLoadData {
-		out, err := tidbClient.LoadData(config.LoadScale, config.LoadTable)
+		err := tidbClient.LoadData(config.LoadScale, config.LoadTable)
 		if err != nil {
-			log.Fatalf("[Error]LoadData failed: %v, %s", err, out)
+			log.Fatalf("[Error]LoadData failed: %v", err)
 		}
-		log.Printf("LoadData: %s", out)
+		log.Printf("LoadData end")
 	}
 	tidbClient.Init()
 	defer tidbClient.Close()
@@ -42,11 +40,11 @@ func TestAutoscale(t *testing.T) {
 	queryCount := 500
 	threadNum := 2
 	log.Printf("[Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	out, err := tidbClient.RunBench(queryCount, threadNum)
+	err := tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
-		log.Fatalf("[Error][Round1]RunBench failed: %v, %s", err, out)
+		log.Fatalf("[Error][Round1]RunBench failed: %v", err)
 	}
-	log.Printf("[Round1]RunBench end: %s", out)
+	log.Printf("[Round1]RunBench end")
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -59,11 +57,11 @@ func TestAutoscale(t *testing.T) {
 	queryCount = 500
 	threadNum = 4
 	log.Printf("[Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	out, err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
-		log.Fatalf("[Error][Round2]RunBench failed: %v, %s", err, out)
+		log.Fatalf("[Error][Round2]RunBench failed: %v", err)
 	}
-	log.Printf("[Round2]RunBench end: %s", out)
+	log.Printf("[Round2]RunBench end")
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)

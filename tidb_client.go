@@ -2,12 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
-	"os/exec"
 )
 
 type TidbClient struct {
@@ -53,7 +53,7 @@ func (c *TidbClient) Close() {
 	c.db.Close()
 }
 
-func (c *TidbClient) LoadData(loadScale string, loadTable string) (string, error) {
+func (c *TidbClient) LoadData(loadScale string, loadTable string) error {
 	host, port := ConvertTidbAddrToHostAndPort(c.tidbAddr)
 	var passwordOption string
 	if c.tidbPassword == "" {
@@ -61,21 +61,37 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) (string, error
 	} else {
 		passwordOption = "-p" + c.tidbPassword
 	}
-	cmd := exec.Command("/bin/bash", "./scripts/rep-and-gendb.sh", c.tidbUser, passwordOption, host, port)
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return string(out), err
+	outStr, errStr, err := RunCommand("/bin/bash", "./scripts/rep-conf.sh", c.tidbUser, passwordOption, host, port)
+	log.Printf("[rep-conf] %s", outStr)
+	if errStr != "" || err != nil {
+		log.Printf("[error][rep-conf]: %s", errStr)
+		if err == nil {
+			err = errors.New("rep-conf failed")
+		}
+		return err
 	}
-	cmd = exec.Command("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, loadScale, loadTable)
-	out, err = cmd.CombinedOutput()
-	return string(out), err
+	outStr, errStr, err = RunCommand("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, loadScale, loadTable)
+	log.Printf("[tpch_load] %s", outStr)
+	if errStr != "" || err != nil {
+		log.Printf("[error][tpch_load]: %s", errStr)
+		if err == nil {
+			err = errors.New("tpch_load failed")
+		}
+	}
+	return err
 }
 
-// RunBench TODO
-func (c *TidbClient) RunBench(queryCount int, threadNum int) (string, error) {
-	cmd := exec.Command("tiup", "bench", "rawsql", "run", "--count", fmt.Sprintf("%d", queryCount), "--query-files", "sql/hehe.sql", "--db", c.dbName, "--threads", fmt.Sprintf("%d", threadNum))
-	out, err := cmd.CombinedOutput()
-	return string(out), err
+func (c *TidbClient) RunBench(queryCount int, threadNum int) error {
+	outStr, errStr, err := RunCommand("tiup", "bench", "rawsql", "run", "--count", fmt.Sprintf("%d", queryCount), "--query-files", "sql/hehe.sql", "--db", c.dbName, "--threads", fmt.Sprintf("%d", threadNum))
+	log.Printf("[tiup bench] %s", outStr)
+	if errStr != "" || err != nil {
+		log.Printf("[error][tiup bench]: %s", errStr)
+		if err == nil {
+			err = errors.New("tiup bench failed")
+		}
+	}
+	return err
+
 }
 
 func (c *TidbClient) SetTiFlashReplica() {

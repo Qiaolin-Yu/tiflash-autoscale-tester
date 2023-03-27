@@ -7,7 +7,7 @@ const (
 	DefaultTidbAddr                = "127.0.0.1:4000"
 	DefaultTidbUser                = "root"
 	DefaultTidbPassword            = ""
-	DefaultNeedLoadData            = true
+	DefaultNeedLoadData            = false
 	DefaultLoadScale               = "0.1"
 	DefaultLoadTable               = "all"
 	DefaultCheckInterval           = 10
