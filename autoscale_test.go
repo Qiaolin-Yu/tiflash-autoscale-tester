@@ -54,8 +54,8 @@ func TestAutoscale(t *testing.T) {
 		assert.NoError(t, err)
 		log.Printf("[Round1]state: %s, topo: %v", state, topo)
 	}
-	queryCount = 500
-	threadNum = 4
+	queryCount = 5000
+	threadNum = 50
 	log.Printf("[Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
@@ -66,10 +66,10 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 1, numOfRNs)
+		assert.Equal(t, 2, numOfRNs)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
-		log.Printf("state: %s, topo: %v", state, topo)
+		log.Printf("[Round2]state: %s, topo: %v", state, topo)
 	}
 
 }
