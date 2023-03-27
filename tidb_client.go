@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -63,20 +62,16 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) error {
 	}
 	outStr, errStr, err := RunCommand("/bin/bash", "./scripts/rep-conf.sh", c.tidbUser, passwordOption, host, port)
 	log.Printf("[rep-conf] %s", outStr)
-	if errStr != "" || err != nil {
+	if errStr != "" {
 		log.Printf("[error][rep-conf]: %s", errStr)
-		if err == nil {
-			err = errors.New("rep-conf failed")
-		}
+	}
+	if err != nil {
 		return err
 	}
 	outStr, errStr, err = RunCommand("/bin/bash", "./integrated/tools/tpch_load.sh", host, port, loadScale, loadTable)
 	log.Printf("[tpch_load] %s", outStr)
-	if errStr != "" || err != nil {
+	if errStr != "" {
 		log.Printf("[error][tpch_load]: %s", errStr)
-		if err == nil {
-			err = errors.New("tpch_load failed")
-		}
 	}
 	return err
 }
@@ -84,11 +79,8 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) error {
 func (c *TidbClient) RunBench(queryCount int, threadNum int) error {
 	outStr, errStr, err := RunCommand("tiup", "bench", "rawsql", "run", "--count", fmt.Sprintf("%d", queryCount), "--query-files", "sql/hehe.sql", "--db", c.dbName, "--threads", fmt.Sprintf("%d", threadNum))
 	log.Printf("[tiup bench] %s", outStr)
-	if errStr != "" || err != nil {
+	if errStr != "" {
 		log.Printf("[error][tiup bench]: %s", errStr)
-		if err == nil {
-			err = errors.New("tiup bench failed")
-		}
 	}
 	return err
 
