@@ -46,12 +46,15 @@ func TestAutoscale(t *testing.T) {
 	if err != nil {
 		log.Fatalf("[Error][Round1]RunBench failed: %v, %s", err, out)
 	}
-	log.Printf("[Round1]RunBench: %s", out)
+	log.Printf("[Round1]RunBench end: %s", out)
 	if config.EnableAutoScale {
-		state, numOfRNs, err := autoscaleClient.GetState("t1")
+		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
 		assert.Equal(t, 1, numOfRNs)
+		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
+		assert.NoError(t, err)
+		log.Printf("[Round1]state: %s, topo: %v", state, topo)
 	}
 	queryCount = 500
 	threadNum = 4
@@ -60,12 +63,15 @@ func TestAutoscale(t *testing.T) {
 	if err != nil {
 		log.Fatalf("[Error][Round2]RunBench failed: %v, %s", err, out)
 	}
-	log.Printf("[Round2]RunBench: %s", out)
+	log.Printf("[Round2]RunBench end: %s", out)
 	if config.EnableAutoScale {
-		state, numOfRNs, err := autoscaleClient.GetState("t1")
+		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
 		assert.Equal(t, 1, numOfRNs)
+		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
+		assert.NoError(t, err)
+		log.Printf("state: %s, topo: %v", state, topo)
 	}
 
 }

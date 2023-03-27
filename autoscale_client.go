@@ -73,5 +73,5 @@ func (c *AutoscaleClient) GetTopology(tidbClusterID string) (string, []string, e
 	if res["hasError"].(float64) != 0.0 {
 		return "", nil, errors.New(res["errorInfo"].(string))
 	}
-	return res["topology"].(string), ConvertInterfaceToStringSlice(res["rns"]), nil
+	return res["state"].(string), ConvertInterfaceToStringSlice(res["topology"]), nil
 }
