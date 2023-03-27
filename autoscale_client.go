@@ -8,6 +8,14 @@ import (
 	"net/url"
 )
 
+const (
+	TenantStateResumedString  = "resumed"
+	TenantStateResumingString = "resuming"
+	TenantStatePausedString   = "paused"
+	TenantStatePausingString  = "pausing"
+	TenantStateUnknownString  = "unknown"
+)
+
 type AutoscaleClient struct {
 	httpServerAddr string
 }

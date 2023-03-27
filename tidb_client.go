@@ -34,7 +34,7 @@ func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string, dbName
 }
 
 func (c *TidbClient) Init() {
-	dsn := fmt.Sprintf("root:@tcp(%s)/"+c.dbName+"?charset=utf8mb4", c.tidbAddr)
+	dsn := fmt.Sprintf(c.tidbUser+":@tcp(%s)/"+c.dbName+"?charset=utf8mb4", c.tidbAddr)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
