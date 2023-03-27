@@ -8,8 +8,22 @@ import (
 )
 
 func TestAutoscale(t *testing.T) {
-	config := NewDefaultConfig()
+	config, err := ReadConfigFromYAMLFile("config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("AutoscaleHttpServerAddr: %s", config.AutoscaleHttpServerAddr)
+	log.Printf("TidbAddr: %s", config.TidbAddr)
+	log.Printf("TidbUser: %s", config.TidbUser)
+	log.Printf("NeedLoadData: %v", config.NeedLoadData)
+	log.Printf("LoadScale: %s", config.LoadScale)
+	log.Printf("LoadTable: %s", config.LoadTable)
+	log.Printf("CheckInterval: %d", config.CheckInterval)
+	log.Printf("CheckTimeout: %d", config.CheckTimeout)
+	log.Printf("EnableAutoScale: %v", config.EnableAutoScale)
+	log.Printf("TidbClusterID: %s", config.TidbClusterID)
 	log.Println("Start to test TiFlash autoscale")
+
 	tidbClient := NewTidbClient(config.TidbAddr, config.TidbUser, config.TidbPassword, config.DbName)
 	var autoscaleClient *AutoscaleClient
 	if config.EnableAutoScale {
@@ -40,7 +54,7 @@ func TestAutoscale(t *testing.T) {
 	queryCount := 500
 	threadNum := 2
 	log.Printf("[Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	err := tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
 		log.Fatalf("[Error][Round1]RunBench failed: %v", err)
 	}

@@ -1,6 +1,10 @@
 package main
 
-import "strings"
+import (
+	"gopkg.in/yaml.v3"
+	"os"
+	"strings"
+)
 
 const (
 	DefaultAutoscaleHttpServerAddr = "http://tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081"
@@ -29,6 +33,78 @@ type Config struct {
 	DbName                  string
 	EnableAutoScale         bool
 	TidbClusterID           string
+}
+
+func ReadConfigFromYAMLFile(filename string) (*Config, error) {
+	yamlData, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var yamlConfig struct {
+		Tidb struct {
+			Addr     string `yaml:"addr"`
+			User     string `yaml:"user"`
+			Password string `yaml:"password"`
+		} `yaml:"tidb"`
+		Load struct {
+			NeedLoadData bool   `yaml:"needLoadData"`
+			Scale        string `yaml:"scale"`
+			Table        string `yaml:"table"`
+		} `yaml:"load"`
+		Check struct {
+			Interval int `yaml:"interval"`
+			Timeout  int `yaml:"timeout"`
+		} `yaml:"check"`
+		Autoscale struct {
+			EnableAutoScale bool   `yaml:"enableAutoScale"`
+			TidbClusterID   string `yaml:"tidbClusterID"`
+			HttpServerAddr  string `yaml:"httpServerAddr"`
+			DbName          string `yaml:"dbName"`
+		} `yaml:"autoscale"`
+	}
+
+	if err := yaml.Unmarshal(yamlData, &yamlConfig); err != nil {
+		return nil, err
+	}
+
+	config := NewDefaultConfig()
+
+	if yamlConfig.Tidb.Addr != "" {
+		config.TidbAddr = yamlConfig.Tidb.Addr
+	}
+	if yamlConfig.Tidb.User != "" {
+		config.TidbUser = yamlConfig.Tidb.User
+	}
+	if yamlConfig.Tidb.Password != "" {
+		config.TidbPassword = yamlConfig.Tidb.Password
+	}
+
+	if yamlConfig.Load.Scale != "" {
+		config.LoadScale = yamlConfig.Load.Scale
+	}
+	if yamlConfig.Load.Table != "" {
+		config.LoadTable = yamlConfig.Load.Table
+	}
+
+	if yamlConfig.Check.Interval != 0 {
+		config.CheckInterval = yamlConfig.Check.Interval
+	}
+	if yamlConfig.Check.Timeout != 0 {
+		config.CheckTimeout = yamlConfig.Check.Timeout
+	}
+
+	if yamlConfig.Autoscale.TidbClusterID != "" {
+		config.TidbClusterID = yamlConfig.Autoscale.TidbClusterID
+	}
+	if yamlConfig.Autoscale.HttpServerAddr != "" {
+		config.AutoscaleHttpServerAddr = yamlConfig.Autoscale.HttpServerAddr
+	}
+	if yamlConfig.Autoscale.DbName != "" {
+		config.DbName = yamlConfig.Autoscale.DbName
+	}
+
+	return config, nil
 }
 
 func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string, tidbPassword string, needLoadData bool, loadScale string, loadTable string, checkInterval int, checkTimeout int, enableAutoScale bool, tidbClusterID string) *Config {

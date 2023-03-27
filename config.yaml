@@ -1,0 +1,19 @@
+tidb:
+  addr: 127.0.0.1:4000
+  user: root
+  password: ""
+
+load:
+  needLoadData: false
+  scale: "0.1"
+  table: all
+
+check:
+  interval: 10
+  timeout: 120
+
+autoscale:
+  enableAutoScale: true
+  tidbClusterID: t1
+  httpServerAddr: http://tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081
+
