@@ -3,7 +3,7 @@ package main
 import "strings"
 
 const (
-	DefaultAutoscaleHttpServerAddr = "tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081"
+	DefaultAutoscaleHttpServerAddr = "http://tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081"
 	DefaultTidbAddr                = "127.0.0.1:4000"
 	DefaultTidbUser                = "root"
 	DefaultTidbPassword            = ""
