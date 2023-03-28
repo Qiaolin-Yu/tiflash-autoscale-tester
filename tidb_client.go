@@ -128,7 +128,7 @@ func (c *TidbClient) GetTiFlashInformationSchema() []InformationSchema {
 
 func CheckTiFlashReady(schemaRows []InformationSchema) bool {
 	for _, row := range schemaRows {
-		if row.Available <= 1 {
+		if row.Available < 1 {
 			return false
 		}
 	}

@@ -4,13 +4,13 @@ tidb:
   password: ""
 
 load:
-  needLoadData: false
+  needLoadData: true
   scale: "0.1"
   table: all
 
 check:
   interval: 10
-  timeout: 120
+  timeout: 300
 
 autoscale:
   enableAutoScale: true
