@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
+	"strings"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"strings"
 )
 
 type TidbClient struct {
@@ -25,8 +26,8 @@ type InformationSchema struct {
 	TableId        string
 	ReplicaCount   int
 	LocationLabels string
-	Available      int
-	Progress       int
+	Available      float64
+	Progress       float64
 }
 
 func NewTidbClient(tidbAddr string, tidbUser string, tidbPassword string, dbName string) *TidbClient {
@@ -127,7 +128,7 @@ func (c *TidbClient) GetTiFlashInformationSchema() []InformationSchema {
 
 func CheckTiFlashReady(schemaRows []InformationSchema) bool {
 	for _, row := range schemaRows {
-		if row.Available == 0 {
+		if row.Available <= 1 {
 			return false
 		}
 	}
