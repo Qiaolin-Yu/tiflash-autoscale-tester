@@ -11,7 +11,7 @@ Some important configurations are listed below.
 - `enableAutoScale`: Whether to enable auto-scaling. If `true`, the auto-scaling will be enabled and tested.
 - `check`: Periodically determine whether tiflash is ready (TiFlash Replica Available) before starting the test.
 
-Note that `needLoadData` and `enableAutoScale` must be configured in yaml file.
+Note that `needLoadData`, `enableAutoScale`, and `workload` must be configured in yaml file.
 
 ## Step 3: Run
 Run the following command to start the test.

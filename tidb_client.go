@@ -84,7 +84,7 @@ func (c *TidbClient) RunBench(queryCount int, threadNum int) error {
 	log.Printf("[tiup bench] %s", outStr)
 	if errStr != "" {
 		log.Printf("[error][tiup bench]: %s", errStr)
-		if strings.Contains(errStr, "DB::Exception") && err == nil {
+		if (strings.Contains(errStr, "DB::Exception") || strings.Contains(errStr, "execute run failed")) && err == nil {
 			return errors.New("tiup bench query error")
 		}
 	}

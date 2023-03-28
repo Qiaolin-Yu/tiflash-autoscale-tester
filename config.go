@@ -34,6 +34,17 @@ type Config struct {
 	DbName                  string
 	EnableAutoScale         bool
 	TidbClusterID           string
+	Workload                WorkloadConfig
+}
+
+type BenchConfig struct {
+	count     int `yaml:"count"`
+	threadNum int `yaml:"threadNum"`
+}
+type WorkloadConfig struct {
+	Round1 BenchConfig `yaml:"round1"`
+	Round2 BenchConfig `yaml:"round2"`
+	Round3 BenchConfig `yaml:"round3"`
 }
 
 func ReadConfigFromYAMLFile(filename string) (*Config, error) {
@@ -62,6 +73,7 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 			TidbClusterID   string `yaml:"tidbClusterID"`
 			HttpServerAddr  string `yaml:"httpServerAddr"`
 		} `yaml:"autoscale"`
+		Workload WorkloadConfig `yaml:"workload"`
 	}
 
 	if err := yaml.Unmarshal(yamlData, &yamlConfig); err != nil {
@@ -73,6 +85,8 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 	config.NeedLoadData = yamlConfig.Load.NeedLoadData
 
 	config.EnableAutoScale = yamlConfig.Autoscale.EnableAutoScale
+
+	config.Workload = yamlConfig.Workload
 
 	if yamlConfig.Tidb.Addr != "" {
 		config.TidbAddr = yamlConfig.Tidb.Addr
