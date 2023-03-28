@@ -16,4 +16,3 @@ autoscale:
   enableAutoScale: true
   tidbClusterID: t1
   httpServerAddr: http://tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081
-

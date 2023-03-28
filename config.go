@@ -1,9 +1,10 @@
 package main
 
 import (
-	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -60,7 +61,6 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 			EnableAutoScale bool   `yaml:"enableAutoScale"`
 			TidbClusterID   string `yaml:"tidbClusterID"`
 			HttpServerAddr  string `yaml:"httpServerAddr"`
-			DbName          string `yaml:"dbName"`
 		} `yaml:"autoscale"`
 	}
 
@@ -69,6 +69,10 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 	}
 
 	config := NewDefaultConfig()
+
+	config.NeedLoadData = yamlConfig.Load.NeedLoadData
+
+	config.EnableAutoScale = yamlConfig.Autoscale.EnableAutoScale
 
 	if yamlConfig.Tidb.Addr != "" {
 		config.TidbAddr = yamlConfig.Tidb.Addr
@@ -82,6 +86,7 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 
 	if yamlConfig.Load.Scale != "" {
 		config.LoadScale = yamlConfig.Load.Scale
+		config.DbName = getDefaultDbName(config.LoadScale)
 	}
 	if yamlConfig.Load.Table != "" {
 		config.LoadTable = yamlConfig.Load.Table
@@ -99,9 +104,6 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 	}
 	if yamlConfig.Autoscale.HttpServerAddr != "" {
 		config.AutoscaleHttpServerAddr = yamlConfig.Autoscale.HttpServerAddr
-	}
-	if yamlConfig.Autoscale.DbName != "" {
-		config.DbName = yamlConfig.Autoscale.DbName
 	}
 
 	return config, nil

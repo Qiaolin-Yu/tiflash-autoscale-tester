@@ -22,6 +22,7 @@ func TestAutoscale(t *testing.T) {
 	log.Printf("[config]CheckTimeout: %d", config.CheckTimeout)
 	log.Printf("[config]EnableAutoScale: %v", config.EnableAutoScale)
 	log.Printf("[config]TidbClusterID: %s", config.TidbClusterID)
+	log.Printf("[config]DbName: %s", config.DbName)
 	log.Println("Start to test TiFlash autoscale")
 
 	tidbClient := NewTidbClient(config.TidbAddr, config.TidbUser, config.TidbPassword, config.DbName)
