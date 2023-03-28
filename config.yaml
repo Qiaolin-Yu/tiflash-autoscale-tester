@@ -19,11 +19,11 @@ autoscale:
 
 workload:
   round1:
-    count: 500
+    queryCount: 500
     threadNum: 2
   round2:
-    count: 5000
+    queryCount: 5000
     threadNum: 50
   round3:
-    count: 500
+    queryCount: 500
     threadNum: 2

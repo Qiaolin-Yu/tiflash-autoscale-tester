@@ -52,8 +52,8 @@ func TestAutoscale(t *testing.T) {
 		time.Sleep(time.Duration(config.CheckInterval) * time.Second)
 	}
 	log.Println("TiFlash is ready, begin to run bench")
-	queryCount := config.Workload.Round1.count
-	threadNum := config.Workload.Round1.threadNum
+	queryCount := config.Workload.Round1.QueryCount
+	threadNum := config.Workload.Round1.ThreadNum
 	log.Printf("[Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
@@ -69,8 +69,8 @@ func TestAutoscale(t *testing.T) {
 		assert.NoError(t, err)
 		log.Printf("[Round1]state: %s, topo: %v", state, topo)
 	}
-	queryCount = config.Workload.Round2.count
-	threadNum = config.Workload.Round2.threadNum
+	queryCount = config.Workload.Round2.QueryCount
+	threadNum = config.Workload.Round2.ThreadNum
 	log.Printf("[Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {
@@ -86,8 +86,8 @@ func TestAutoscale(t *testing.T) {
 		assert.NoError(t, err)
 		log.Printf("[Round2]state: %s, topo: %v", state, topo)
 	}
-	queryCount = config.Workload.Round3.count
-	threadNum = config.Workload.Round3.threadNum
+	queryCount = config.Workload.Round3.QueryCount
+	threadNum = config.Workload.Round3.ThreadNum
 	log.Printf("[Round3]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	err = tidbClient.RunBench(queryCount, threadNum)
 	if err != nil {

@@ -37,14 +37,19 @@ type Config struct {
 	Workload                WorkloadConfig
 }
 
-type BenchConfig struct {
-	count     int `yaml:"count"`
-	threadNum int `yaml:"threadNum"`
-}
 type WorkloadConfig struct {
-	Round1 BenchConfig `yaml:"round1"`
-	Round2 BenchConfig `yaml:"round2"`
-	Round3 BenchConfig `yaml:"round3"`
+	Round1 struct {
+		QueryCount int `yaml:"queryCount"`
+		ThreadNum  int `yaml:"threadNum"`
+	} `yaml:"round1"`
+	Round2 struct {
+		QueryCount int `yaml:"queryCount"`
+		ThreadNum  int `yaml:"threadNum"`
+	} `yaml:"round2"`
+	Round3 struct {
+		QueryCount int `yaml:"queryCount"`
+		ThreadNum  int `yaml:"threadNum"`
+	} `yaml:"round3"`
 }
 
 func ReadConfigFromYAMLFile(filename string) (*Config, error) {
