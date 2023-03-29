@@ -3,12 +3,6 @@
 ## Step 1: Prepare
 Prepare a TiDB test environment.
 
-```shell
-cd tiflash-cse-test
-bash run.sh t1
-```
-
-
 ## Step 2: Set configuration
 Set the configuration in `config.toml`.
 
