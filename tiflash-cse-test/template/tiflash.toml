@@ -1,0 +1,5 @@
+#keyspace_name="{{TENANT}}"
+[flash.proxy]
+config = "/home/ubuntu/custom-tiup/tiflash-cse-test/template/tiflash-learner.toml"
+[storage]
+format_version = 3

@@ -1,0 +1,10 @@
+keyspace-name = "{{TENANT}}"
+enable-telemetry = false
+disaggregated-tiflash = true
+[log]
+level = 'debug'
+[ratelimit]
+full-speed = 1048576000
+full-speed-capacity = 1048576000
+low-speed-watermark = 1048576000000
+block-write-watermark = 1048576000000
