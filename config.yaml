@@ -9,8 +9,8 @@ load:
   table: all
 
 check:
-  interval: 10
-  timeout: 300
+  interval: 60
+  timeout: 1000
 
 autoscale:
   enableAutoScale: true
@@ -26,4 +26,4 @@ workload:
     threadNum: 50
   round3:
     queryCount: 500
-    threadNum: 2
+    threadNum: 1
