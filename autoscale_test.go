@@ -61,7 +61,7 @@ func TestAutoscale(t *testing.T) {
 	if err != nil {
 		log.Fatalf("[Error][Round1]RunBench failed: %v", err)
 	}
-	log.Printf("[Round1]RunBench end, cost time: %v", round1End.Sub(round1Start).Minutes())
+	log.Printf("[Round1]RunBench end, run for %v minutes", round1End.Sub(round1Start).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -80,7 +80,7 @@ func TestAutoscale(t *testing.T) {
 	if err != nil {
 		log.Fatalf("[Error][Round2]RunBench failed: %v", err)
 	}
-	log.Printf("[Round2]RunBench end, cost time: %v", round2End.Sub(round2Start).Minutes())
+	log.Printf("[Round2]RunBench end, run for %v minutes", round2End.Sub(round2Start).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -99,7 +99,7 @@ func TestAutoscale(t *testing.T) {
 	if err != nil {
 		log.Fatalf("[Error][Round3]RunBench failed: %v", err)
 	}
-	log.Printf("[Round3]RunBench end, cost time: %v", round3End.Sub(round3Start).Minutes())
+	log.Printf("[Round3]RunBench end, run for %v minutes", round3End.Sub(round3Start).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
