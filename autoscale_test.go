@@ -54,14 +54,14 @@ func TestAutoscale(t *testing.T) {
 	log.Println("TiFlash is ready, begin to run bench")
 	queryCount := config.Workload.PauseResumeTest.QueryCount
 	threadNum := config.Workload.PauseResumeTest.ThreadNum
-	log.Printf("[PauseResumeTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	log.Printf("[PauseResumeTest][Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	pauseResumeTestStart := time.Now()
 	err = tidbClient.RunBench(queryCount, threadNum)
 	pauseResumeTestEnd := time.Now()
 	if err != nil {
-		log.Fatalf("[Error][PauseResumeTest]RunBench failed: %v", err)
+		log.Fatalf("[Error][PauseResumeTest][Round1]RunBench failed: %v", err)
 	}
-	log.Printf("[PauseResumeTest]RunBench end, run for %v minutes", pauseResumeTestEnd.Sub(pauseResumeTestStart).Minutes())
+	log.Printf("[PauseResumeTest][Round1]RunBench end, run for %v minutes", pauseResumeTestEnd.Sub(pauseResumeTestStart).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -69,8 +69,40 @@ func TestAutoscale(t *testing.T) {
 		assert.Equal(t, 1, numOfRNs)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
-		log.Printf("[PauseResumeTest]state: %s, topo: %v", state, topo)
+		log.Printf("[PauseResumeTest][Round1]state: %s, topo: %v", state, topo)
 	}
+	log.Printf("[PauseResumeTest]stop benchmark, wait for pause")
+	time.Sleep(1 * time.Minute)
+	if config.EnableAutoScale {
+		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
+		assert.NoError(t, err)
+		assert.Equal(t, TenantStatePausedString, state)
+		assert.Equal(t, 0, numOfRNs)
+		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
+		assert.NoError(t, err)
+		log.Printf("[PauseResumeTest][Pause]state: %s, topo: %v", state, topo)
+	}
+
+	queryCount = config.Workload.PauseResumeTest.QueryCount
+	threadNum = config.Workload.PauseResumeTest.ThreadNum
+	log.Printf("[PauseResumeTest][Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	pauseResumeTestStart = time.Now()
+	err = tidbClient.RunBench(queryCount, threadNum)
+	pauseResumeTestEnd = time.Now()
+	if err != nil {
+		log.Fatalf("[Error][PauseResumeTest][Round2]RunBench failed: %v", err)
+	}
+	log.Printf("[PauseResumeTest][Round2]RunBench end, run for %v minutes", pauseResumeTestEnd.Sub(pauseResumeTestStart).Minutes())
+	if config.EnableAutoScale {
+		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
+		assert.NoError(t, err)
+		assert.Equal(t, TenantStateResumedString, state)
+		assert.Equal(t, 1, numOfRNs)
+		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
+		assert.NoError(t, err)
+		log.Printf("[PauseResumeTest][Round2]state: %s, topo: %v", state, topo)
+	}
+
 	queryCount = config.Workload.ScaleOutTest.QueryCount
 	threadNum = config.Workload.ScaleOutTest.ThreadNum
 	log.Printf("[ScaleOutTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)

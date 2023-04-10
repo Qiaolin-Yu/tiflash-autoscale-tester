@@ -19,7 +19,7 @@ autoscale:
 
 workload:
   pauseResumeTest:
-    queryCount: 300
+    queryCount: 100
     threadNum: 2
   scaleOutTest:
     queryCount: 2000
