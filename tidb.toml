@@ -1,5 +1,0 @@
-autoscaler-cluster-id = "t1"
-use-autoscaler = true
-autoscaler-type = "aws"
-autoscaler-addr = "tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081"
-disaggregated-tiflash = true
