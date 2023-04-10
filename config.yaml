@@ -18,12 +18,12 @@ autoscale:
   httpServerAddr: http://tiflash-autoscale-lb.tiflash-autoscale.svc.cluster.local:8081
 
 workload:
-  round1:
-    queryCount: 500
+  pauseResumeTest:
+    queryCount: 300
     threadNum: 2
-  round2:
-    queryCount: 5000
+  scaleOutTest:
+    queryCount: 2000
     threadNum: 50
-  round3:
-    queryCount: 500
+  scaleInTest:
+    queryCount: 300
     threadNum: 1

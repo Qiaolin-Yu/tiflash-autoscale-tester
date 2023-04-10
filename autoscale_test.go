@@ -52,16 +52,16 @@ func TestAutoscale(t *testing.T) {
 		time.Sleep(time.Duration(config.CheckInterval) * time.Second)
 	}
 	log.Println("TiFlash is ready, begin to run bench")
-	queryCount := config.Workload.Round1.QueryCount
-	threadNum := config.Workload.Round1.ThreadNum
-	log.Printf("[Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	round1Start := time.Now()
+	queryCount := config.Workload.PauseResumeTest.QueryCount
+	threadNum := config.Workload.PauseResumeTest.ThreadNum
+	log.Printf("[PauseResumeTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	pauseResumeTestStart := time.Now()
 	err = tidbClient.RunBench(queryCount, threadNum)
-	round1End := time.Now()
+	pauseResumeTestEnd := time.Now()
 	if err != nil {
-		log.Fatalf("[Error][Round1]RunBench failed: %v", err)
+		log.Fatalf("[Error][PauseResumeTest]RunBench failed: %v", err)
 	}
-	log.Printf("[Round1]RunBench end, run for %v minutes", round1End.Sub(round1Start).Minutes())
+	log.Printf("[PauseResumeTest]RunBench end, run for %v minutes", pauseResumeTestEnd.Sub(pauseResumeTestStart).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -69,18 +69,18 @@ func TestAutoscale(t *testing.T) {
 		assert.Equal(t, 1, numOfRNs)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
-		log.Printf("[Round1]state: %s, topo: %v", state, topo)
+		log.Printf("[PauseResumeTest]state: %s, topo: %v", state, topo)
 	}
-	queryCount = config.Workload.Round2.QueryCount
-	threadNum = config.Workload.Round2.ThreadNum
-	log.Printf("[Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	round2Start := time.Now()
+	queryCount = config.Workload.ScaleOutTest.QueryCount
+	threadNum = config.Workload.ScaleOutTest.ThreadNum
+	log.Printf("[ScaleOutTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	scaleOutTestStart := time.Now()
 	err = tidbClient.RunBench(queryCount, threadNum)
-	round2End := time.Now()
+	scaleOutTestEnd := time.Now()
 	if err != nil {
-		log.Fatalf("[Error][Round2]RunBench failed: %v", err)
+		log.Fatalf("[Error][ScaleOutTest]RunBench failed: %v", err)
 	}
-	log.Printf("[Round2]RunBench end, run for %v minutes", round2End.Sub(round2Start).Minutes())
+	log.Printf("[ScaleOutTest]RunBench end, run for %v minutes", scaleOutTestEnd.Sub(scaleOutTestStart).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -88,18 +88,18 @@ func TestAutoscale(t *testing.T) {
 		assert.Equal(t, 2, numOfRNs)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
-		log.Printf("[Round2]state: %s, topo: %v", state, topo)
+		log.Printf("[ScaleOutTest]state: %s, topo: %v", state, topo)
 	}
-	queryCount = config.Workload.Round3.QueryCount
-	threadNum = config.Workload.Round3.ThreadNum
-	log.Printf("[Round3]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
-	round3Start := time.Now()
+	queryCount = config.Workload.ScaleInTest.QueryCount
+	threadNum = config.Workload.ScaleInTest.ThreadNum
+	log.Printf("[ScaleInTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
+	scaleInTestStart := time.Now()
 	err = tidbClient.RunBench(queryCount, threadNum)
-	round3End := time.Now()
+	scaleInTestEnd := time.Now()
 	if err != nil {
-		log.Fatalf("[Error][Round3]RunBench failed: %v", err)
+		log.Fatalf("[Error][ScaleInTest]RunBench failed: %v", err)
 	}
-	log.Printf("[Round3]RunBench end, run for %v minutes", round3End.Sub(round3Start).Minutes())
+	log.Printf("[ScaleInTest]RunBench end, run for %v minutes", scaleInTestEnd.Sub(scaleInTestStart).Minutes())
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -107,6 +107,6 @@ func TestAutoscale(t *testing.T) {
 		assert.Equal(t, 1, numOfRNs)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
-		log.Printf("[Round3]state: %s, topo: %v", state, topo)
+		log.Printf("[ScaleInTest]state: %s, topo: %v", state, topo)
 	}
 }
