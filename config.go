@@ -63,6 +63,7 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 			Addr     string `yaml:"addr"`
 			User     string `yaml:"user"`
 			Password string `yaml:"password"`
+			DbName   string `yaml:"dbName"`
 		} `yaml:"tidb"`
 		Load struct {
 			NeedLoadData bool   `yaml:"needLoadData"`
@@ -105,8 +106,14 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 
 	if yamlConfig.Load.Scale != "" {
 		config.LoadScale = yamlConfig.Load.Scale
+	}
+
+	if yamlConfig.Tidb.DbName != "" {
+		config.DbName = yamlConfig.Tidb.DbName
+	} else {
 		config.DbName = getDefaultDbName(config.LoadScale)
 	}
+
 	if yamlConfig.Load.Table != "" {
 		config.LoadTable = yamlConfig.Load.Table
 	}
