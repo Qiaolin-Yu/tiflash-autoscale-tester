@@ -108,7 +108,7 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 		config.LoadScale = yamlConfig.Load.Scale
 	}
 
-	if yamlConfig.Tidb.DbName != "" {
+	if yamlConfig.Tidb.DbName != "" && !config.NeedLoadData {
 		config.DbName = yamlConfig.Tidb.DbName
 	} else {
 		config.DbName = getDefaultDbName(config.LoadScale)
