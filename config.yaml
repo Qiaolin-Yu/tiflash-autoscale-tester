@@ -2,7 +2,7 @@ tidb:
   addr: 127.0.0.1:4000
   user: root
   password: ""
-  dbName: "tpch_0_1"
+  dbName: "" # default: "tpch_" + strings.replaceAll(scale, ".", "_")
 
 load:
   needLoadData: true
