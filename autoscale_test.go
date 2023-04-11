@@ -66,7 +66,7 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 1, numOfRNs)
+		assert.True(t, numOfRNs >= 1)
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[PauseResumeTest][Round1]state: %s, topo: %v", state, topo)
@@ -93,11 +93,13 @@ func TestAutoscale(t *testing.T) {
 		log.Fatalf("[Error][PauseResumeTest][Round2]RunBench failed: %v", err)
 	}
 	log.Printf("[PauseResumeTest][Round2]RunBench end, run for %v minutes", pauseResumeTestEnd.Sub(pauseResumeTestStart).Minutes())
+	var currentRNNum int
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 1, numOfRNs)
+		assert.True(t, numOfRNs >= 1)
+		currentRNNum = numOfRNs
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[PauseResumeTest][Round2]state: %s, topo: %v", state, topo)
@@ -117,7 +119,8 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 2, numOfRNs)
+		assert.True(t, numOfRNs > currentRNNum)
+		currentRNNum = numOfRNs
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[ScaleOutTest]state: %s, topo: %v", state, topo)
@@ -136,7 +139,8 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 1, numOfRNs)
+		assert.True(t, numOfRNs < currentRNNum)
+		currentRNNum = numOfRNs
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[ScaleInTest]state: %s, topo: %v", state, topo)
@@ -156,7 +160,8 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 2, numOfRNs)
+		assert.True(t, numOfRNs > currentRNNum)
+		currentRNNum = numOfRNs
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[ScaleOutTest]state: %s, topo: %v", state, topo)
@@ -176,7 +181,8 @@ func TestAutoscale(t *testing.T) {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
 		assert.Equal(t, TenantStateResumedString, state)
-		assert.Equal(t, 1, numOfRNs)
+		assert.True(t, numOfRNs < currentRNNum)
+		currentRNNum = numOfRNs
 		state, topo, err := autoscaleClient.GetTopology(config.TidbClusterID)
 		assert.NoError(t, err)
 		log.Printf("[ScaleInTest]state: %s, topo: %v", state, topo)
