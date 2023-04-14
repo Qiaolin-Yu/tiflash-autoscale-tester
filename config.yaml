@@ -12,6 +12,7 @@ load:
 check:
   interval: 60
   timeout: 1000
+  expectPauseTime: 120
 
 autoscale:
   enableAutoScale: true

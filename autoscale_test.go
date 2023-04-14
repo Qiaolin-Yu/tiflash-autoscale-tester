@@ -20,6 +20,7 @@ func TestAutoscale(t *testing.T) {
 	log.Printf("[config]LoadTable: %s", config.LoadTable)
 	log.Printf("[config]CheckInterval: %d", config.CheckInterval)
 	log.Printf("[config]CheckTimeout: %d", config.CheckTimeout)
+	log.Printf("[config]ExpectPauseTime: %d", config.ExpectPauseTime)
 	log.Printf("[config]EnableAutoScale: %v", config.EnableAutoScale)
 	log.Printf("[config]TidbClusterID: %s", config.TidbClusterID)
 	log.Printf("[config]DbName: %s", config.DbName)
@@ -72,7 +73,7 @@ func TestAutoscale(t *testing.T) {
 		log.Printf("[PauseResumeTest][Round1]state: %s, topo: %v", state, topo)
 	}
 	log.Printf("[PauseResumeTest]stop benchmark, wait for pause")
-	time.Sleep(2 * time.Minute)
+	time.Sleep(time.Duration(config.ExpectPauseTime) * time.Second)
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)
@@ -188,7 +189,7 @@ func TestAutoscale(t *testing.T) {
 		log.Printf("[ScaleInTest]state: %s, topo: %v", state, topo)
 	}
 
-	time.Sleep(2 * time.Minute)
+	time.Sleep(time.Duration(config.ExpectPauseTime) * time.Second)
 	if config.EnableAutoScale {
 		state, numOfRNs, err := autoscaleClient.GetState(config.TidbClusterID)
 		assert.NoError(t, err)

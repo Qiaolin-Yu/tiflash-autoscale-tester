@@ -17,6 +17,7 @@ const (
 	DefaultLoadTable               = "all"
 	DefaultCheckInterval           = 10
 	DefaultCheckTimeout            = 120
+	DefaultExpectPauseTime         = 120
 	DefaultEnableAutoScale         = true
 	DefaultTidbClusterID           = "t1"
 )
@@ -31,6 +32,7 @@ type Config struct {
 	LoadTable               string
 	CheckInterval           int
 	CheckTimeout            int
+	ExpectPauseTime         int
 	DbName                  string
 	EnableAutoScale         bool
 	TidbClusterID           string
@@ -71,8 +73,9 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 			Table        string `yaml:"table"`
 		} `yaml:"load"`
 		Check struct {
-			Interval int `yaml:"interval"`
-			Timeout  int `yaml:"timeout"`
+			Interval        int `yaml:"interval"`
+			Timeout         int `yaml:"timeout"`
+			ExpectPauseTime int `yaml:"expectPauseTime"`
 		} `yaml:"check"`
 		Autoscale struct {
 			EnableAutoScale bool   `yaml:"enableAutoScale"`
@@ -125,6 +128,10 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 		config.CheckTimeout = yamlConfig.Check.Timeout
 	}
 
+	if yamlConfig.Check.ExpectPauseTime != 0 {
+		config.ExpectPauseTime = yamlConfig.Check.ExpectPauseTime
+	}
+
 	if yamlConfig.Autoscale.TidbClusterID != "" {
 		config.TidbClusterID = yamlConfig.Autoscale.TidbClusterID
 	}
@@ -135,7 +142,7 @@ func ReadConfigFromYAMLFile(filename string) (*Config, error) {
 	return config, nil
 }
 
-func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string, tidbPassword string, needLoadData bool, loadScale string, loadTable string, checkInterval int, checkTimeout int, enableAutoScale bool, tidbClusterID string) *Config {
+func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string, tidbPassword string, needLoadData bool, loadScale string, loadTable string, checkInterval int, checkTimeout int, expectPauseTime int, enableAutoScale bool, tidbClusterID string) *Config {
 	config := &Config{
 		AutoscaleHttpServerAddr: autoscaleHttpServerAddr,
 		TidbAddr:                tidbAddr,
@@ -146,6 +153,7 @@ func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string,
 		LoadTable:               loadTable,
 		CheckInterval:           checkInterval,
 		CheckTimeout:            checkTimeout,
+		ExpectPauseTime:         expectPauseTime,
 		EnableAutoScale:         enableAutoScale,
 		TidbClusterID:           tidbClusterID,
 	}
@@ -154,7 +162,7 @@ func NewConfig(autoscaleHttpServerAddr string, tidbAddr string, tidbUser string,
 }
 
 func NewDefaultConfig() *Config {
-	return NewConfig(DefaultAutoscaleHttpServerAddr, DefaultTidbAddr, DefaultTidbUser, DefaultTidbPassword, DefaultNeedLoadData, DefaultLoadScale, DefaultLoadTable, DefaultCheckInterval, DefaultCheckTimeout, DefaultEnableAutoScale, DefaultTidbClusterID)
+	return NewConfig(DefaultAutoscaleHttpServerAddr, DefaultTidbAddr, DefaultTidbUser, DefaultTidbPassword, DefaultNeedLoadData, DefaultLoadScale, DefaultLoadTable, DefaultCheckInterval, DefaultCheckTimeout, DefaultExpectPauseTime, DefaultEnableAutoScale, DefaultTidbClusterID)
 }
 
 func getDefaultDbName(loadScale string) string {
