@@ -79,8 +79,9 @@ func (c *TidbClient) LoadData(loadScale string, loadTable string) error {
 	return err
 }
 
-func (c *TidbClient) RunBench(queryCount int, threadNum int) error {
-	outStr, errStr, err := RunCommand("tiup", "bench", "rawsql", "run", "--count", fmt.Sprintf("%d", queryCount), "--query-files", "sql/hehe.sql", "--db", c.dbName, "--threads", fmt.Sprintf("%d", threadNum))
+func (c *TidbClient) RunBench(addr string, queryCount int, threadNum int) error {
+	host, port := ConvertTidbAddrToHostAndPort(addr)
+	outStr, errStr, err := RunCommand("tiup", "bench", "rawsql", "run", "--count", fmt.Sprintf("%d", queryCount), "--query-files", "sql/hehe.sql", "--db", c.dbName, "--threads", fmt.Sprintf("%d", threadNum), "--host", host, "--port", port)
 	log.Printf("[tiup bench] %s", outStr)
 	if errStr != "" {
 		log.Printf("[error][tiup bench]: %s", errStr)

@@ -56,7 +56,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum := config.Workload.PauseResumeTest.ThreadNum
 	log.Printf("[PauseResumeTest][Round1]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	pauseResumeTestStart := time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	pauseResumeTestEnd := time.Now()
 	if err != nil {
 		log.Fatalf("[Error][PauseResumeTest][Round1]RunBench failed: %v", err)
@@ -87,7 +87,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum = config.Workload.PauseResumeTest.ThreadNum
 	log.Printf("[PauseResumeTest][Round2]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	pauseResumeTestStart = time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	pauseResumeTestEnd = time.Now()
 	if err != nil {
 		log.Fatalf("[Error][PauseResumeTest][Round2]RunBench failed: %v", err)
@@ -109,7 +109,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum = config.Workload.ScaleOutTest.ThreadNum
 	log.Printf("[ScaleOutTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	scaleOutTestStart := time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	scaleOutTestEnd := time.Now()
 	if err != nil {
 		log.Fatalf("[Error][ScaleOutTest]RunBench failed: %v", err)
@@ -129,7 +129,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum = config.Workload.ScaleInTest.ThreadNum
 	log.Printf("[ScaleInTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	scaleInTestStart := time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	scaleInTestEnd := time.Now()
 	if err != nil {
 		log.Fatalf("[Error][ScaleInTest]RunBench failed: %v", err)
@@ -150,7 +150,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum = config.Workload.ScaleOutTest.ThreadNum
 	log.Printf("[ScaleOutTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	scaleOutTestStart = time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	scaleOutTestEnd = time.Now()
 	if err != nil {
 		log.Fatalf("[Error][ScaleOutTest]RunBench failed: %v", err)
@@ -171,7 +171,7 @@ func TestAutoscale(t *testing.T) {
 	threadNum = config.Workload.ScaleInTest.ThreadNum
 	log.Printf("[ScaleInTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
 	scaleInTestStart = time.Now()
-	err = tidbClient.RunBench(queryCount, threadNum)
+	err = tidbClient.RunBench(config.TidbAddr, queryCount, threadNum)
 	scaleInTestEnd = time.Now()
 	if err != nil {
 		log.Fatalf("[Error][ScaleInTest]RunBench failed: %v", err)
