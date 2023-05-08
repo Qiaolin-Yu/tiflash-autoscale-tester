@@ -144,6 +144,7 @@ func TestScaleInAndOut(t *testing.T) {
 		assert.NoError(t, err)
 		log.Printf("[Prewarm Round]state: %s, topo: %v", state, topo)
 	}
+	MustExec(tidbClient.db, "set global tidb_max_tiflash_threads = 8;")
 
 	queryCount = config.Workload.ScaleOutTest.QueryCount
 	threadNum = config.Workload.ScaleOutTest.ThreadNum
@@ -165,6 +166,7 @@ func TestScaleInAndOut(t *testing.T) {
 		assert.NoError(t, err)
 		log.Printf("[ScaleOutTest]state: %s, topo: %v", state, topo)
 	}
+	MustExec(tidbClient.db, "set global tidb_max_tiflash_threads = 2;")
 	queryCount = config.Workload.ScaleInTest.QueryCount
 	threadNum = config.Workload.ScaleInTest.ThreadNum
 	log.Printf("[ScaleInTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
@@ -186,6 +188,7 @@ func TestScaleInAndOut(t *testing.T) {
 		log.Printf("[ScaleInTest]state: %s, topo: %v", state, topo)
 	}
 
+	MustExec(tidbClient.db, "set global tidb_max_tiflash_threads = 8;")
 	queryCount = config.Workload.ScaleOutTest.QueryCount
 	threadNum = config.Workload.ScaleOutTest.ThreadNum
 	log.Printf("[ScaleOutTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
@@ -207,6 +210,7 @@ func TestScaleInAndOut(t *testing.T) {
 		log.Printf("[ScaleOutTest]state: %s, topo: %v", state, topo)
 	}
 
+	MustExec(tidbClient.db, "set global tidb_max_tiflash_threads = 2;")
 	queryCount = config.Workload.ScaleInTest.QueryCount
 	threadNum = config.Workload.ScaleInTest.ThreadNum
 	log.Printf("[ScaleInTest]RunBenchmark: queryCount=%d, threadNum=%d", queryCount, threadNum)
